@@ -30,7 +30,7 @@ const tasks = [
         acc[tasks._id] = tasks;
         return acc;
     }, {});
-    console.log(objectOfTasks);
+
     //Elements UI
     const listContainer = document.querySelector(
         '.tasks-list-section .list-group'
