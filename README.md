@@ -1,2 +1,2 @@
 ### To do list.
-Используемые технологии: HTML, JavaScript
+Используемые технологии: HTML, CSS (CSS variables), JavaScript.
