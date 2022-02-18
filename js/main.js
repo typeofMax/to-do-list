@@ -100,6 +100,8 @@ const tasks = [
         },
     };
 
+    let lastSelectedTheme = localStorage.getItem('app_theme') || 'default';
+    
     //Elements UI
     const listContainer = document.querySelector(
         '.tasks-list-section .list-group'
@@ -110,8 +112,9 @@ const tasks = [
         inputBody = form.elements.body;
 
     const themeSelect = document.getElementById('themeSelect');
-    
+
     //Events
+    setTheme(lastSelectedTheme);
     renderAllTasks(objectOfTasks);
     form.addEventListener('submit', onFormSubmitHandler);
     listContainer.addEventListener('click', onListItemDeleteHandler);
@@ -223,14 +226,27 @@ const tasks = [
         }
     }
 
-    function onThemeSelectHandler(e) {
-        setTheme(themeSelect.value);
+    function onThemeSelectHandler() {
+        const selectedThem = themeSelect.value;
+
+        const isConfirm = confirm(`Изменить тему на: ${selectedThem} ?`);
+        if (!isConfirm) {
+            themeSelect.value = lastSelectedTheme;
+            return;
+        }
+
+        setTheme(selectedThem);
+        lastSelectedTheme = selectedThem;
+        localStorage.setItem('app_theme', selectedThem);
     }
 
     function setTheme(themeName) {
+        themeSelect.value = themeName;
+
         const selectedThemeObj = themes[themeName];
         Object.entries(selectedThemeObj).forEach(([key, value]) => {
             document.documentElement.style.setProperty(key, value);
         });
     }
 })(tasks);
+
