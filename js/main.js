@@ -2,26 +2,26 @@ const tasks = [
     {
         _id: '5d2ca9e2e03d40b326596aa7',
         completed: true,
-        body: 'Occaecat non ea quis occaecat ad culpa amet deserunt incididunt elit fugiat pariatur. Exercitation commodo culpa in veniam proident laboris in. Excepteur cupidatat eiusmod dolor consectetur exercitation nulla aliqua veniam fugiat irure mollit. Eu dolor dolor excepteur pariatur aute do do ut pariatur consequat reprehenderit deserunt.\r\n',
-        title: 'Eu ea incididunt sunt consectetur fugiat non.',
+        body: 'Овощи, молоко, мясо, масло подсолнечное \r\n',
+        title: 'Купить продукты',
     },
     {
         _id: '5d2ca9e29c8a94095c1288e0',
         completed: false,
-        body: 'Aliquip cupidatat ex adipisicing veniam do tempor. Lorem nulla adipisicing et esse cupidatat qui deserunt in fugiat duis est qui. Est adipisicing ipsum qui cupidatat exercitation. Cupidatat aliqua deserunt id deserunt excepteur nostrud culpa eu voluptate excepteur. Cillum officia proident anim aliquip. Dolore veniam qui reprehenderit voluptate non id anim.\r\n',
-        title: 'Deserunt laborum id consectetur pariatur veniam occaecat occaecat tempor voluptate pariatur nulla reprehenderit ipsum.',
+        body: 'ОФП по видео на YouTube (добавлено в избранное)\r\n',
+        title: 'Тренировка',
     },
     {
         _id: '5d2ca9e2e03d40b3232496aa7',
         completed: true,
-        body: 'Occaecat non ea quis occaecat ad culpa amet deserunt incididunt elit fugiat pariatur. Exercitation commodo culpa in veniam proident laboris in. Excepteur cupidatat eiusmod dolor consectetur exercitation nulla aliqua veniam fugiat irure mollit. Eu dolor dolor excepteur pariatur aute do do ut pariatur consequat reprehenderit deserunt.\r\n',
-        title: 'Eu ea incididunt sunt consectetur fugiat non.',
+        body: 'Медитация по приложению Meditopia\r\n',
+        title: 'Медитация',
     },
     {
         _id: '5d2ca9e29c8a94095564788e0',
         completed: false,
-        body: 'Aliquip cupidatat ex adipisicing veniam do tempor. Lorem nulla adipisicing et esse cupidatat qui deserunt in fugiat duis est qui. Est adipisicing ipsum qui cupidatat exercitation. Cupidatat aliqua deserunt id deserunt excepteur nostrud culpa eu voluptate excepteur. Cillum officia proident anim aliquip. Dolore veniam qui reprehenderit voluptate non id anim.\r\n',
-        title: 'Deserunt laborum id consectetur pariatur veniam occaecat occaecat tempor voluptate pariatur nulla reprehenderit ipsum.',
+        body: 'Кодить =))\r\n',
+        title: 'Кодить',
     },
 ];
 
@@ -38,11 +38,13 @@ const tasks = [
     const form = document.forms.addTask,
         inputTitle = form.elements.title,
         inputBody = form.elements.body;
-
+    console.log(listContainer);
     //Events
     renderAllTasks(objectOfTasks);
     form.addEventListener('submit', onFormSubmitHandler);
+    listContainer.addEventListener('click', onListItemDeleteHandler);
 
+    //Logic
     function renderAllTasks(tasksList) {
         if (!tasksList) {
             console.log('Передайте список задач');
@@ -67,6 +69,7 @@ const tasks = [
             'flex-wrap',
             'mt-2'
         );
+        li.setAttribute(['data-task-id'], _id);
 
         const span = document.createElement('span');
         span.textContent = title;
@@ -101,7 +104,7 @@ const tasks = [
         const task = createNewTask(taskTitle, taskBody),
             listItem = createLiTemplate(task);
 
-        listContainer.insertAdjacentElement('beforebegin', listItem);
+        listContainer.insertAdjacentElement('afterbegin', listItem);
         form.reset();
     }
 
@@ -116,5 +119,31 @@ const tasks = [
         objectOfTasks[newTask._id] = newTask;
 
         return { ...newTask };
+    }
+
+    function deleteTask(id) {
+        const { title } = objectOfTasks[id];
+        const isConfirm = confirm(`Подтвердите удаление задачи: ${title}`);
+
+        if (!isConfirm) {
+            return isConfirm;
+        }
+        delete objectOfTasks[id];
+
+        return isConfirm;
+    }
+
+    function deleteTaskFromHTML(confirmed, el) {
+        if (!confirmed) return;
+        el.remove();
+    }
+
+    function onListItemDeleteHandler({ target }) {
+        if (target.classList.contains('delete-btn')) {
+            const parentElement = target.closest('[data-task-id]');
+            const listItemId = parentElement.dataset.taskId;
+            const confirmed = deleteTask(listItemId);
+            deleteTaskFromHTML(confirmed, parentElement);
+        }
     }
 })(tasks);
