@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,9 +10,20 @@
             integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
             crossorigin="anonymous"
         />
-        <title>Todo List</title>
+        <link rel="stylesheet" href="css/style.css" />
+        <title>Document</title>
     </head>
     <body>
+        <nav class="header navbar navbar-dark bg-primary">
+            <a class="navbar-brand">Navbar</a>
+            <form class="form-inline">
+                <select class="form-control form-control-sm" id="themeSelect">
+                    <option value="default">Theme Default</option>
+                    <option value="light">Theme Light</option>
+                    <option value="dark">Theme Dark</option>
+                </select>
+            </form>
+        </nav>
         <div class="form-section mt-5">
             <div class="container">
                 <div class="row">
