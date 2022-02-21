@@ -25,7 +25,7 @@ const tasks = [
     },
 ];
 
-(function (arrOfTasks) {
+(function (arrOfTasks = []) {
     const objectOfTasks = arrOfTasks.reduce((acc, tasks) => {
         acc[tasks._id] = tasks;
         return acc;
@@ -101,7 +101,7 @@ const tasks = [
     };
 
     let lastSelectedTheme = localStorage.getItem('app_theme') || 'default';
-    
+
     //Elements UI
     const listContainer = document.querySelector(
         '.tasks-list-section .list-group'
@@ -134,6 +134,7 @@ const tasks = [
         });
 
         listContainer.appendChild(fragment);
+        checkTasksList();
     }
 
     function createLiTemplate({ _id, title, body } = {}) {
@@ -182,6 +183,8 @@ const tasks = [
 
         listContainer.insertAdjacentElement('afterbegin', listItem);
         form.reset();
+
+        removeEmptyTaskListMessage();
     }
 
     function createNewTask(title, body) {
@@ -214,6 +217,7 @@ const tasks = [
         if (!confirmed) {
             return;
         }
+
         el.remove();
     }
 
@@ -223,6 +227,7 @@ const tasks = [
             const listItemId = parentElement.dataset.taskId;
             const confirmed = deleteTask(listItemId);
             deleteTaskFromHTML(confirmed, parentElement);
+            checkTasksList();
         }
     }
 
@@ -248,5 +253,32 @@ const tasks = [
             document.documentElement.style.setProperty(key, value);
         });
     }
-})(tasks);
 
+    function checkTasksList() {
+        if (!listContainer.children.length) {
+            showEmptyTaskListMessage();
+        }
+    }
+
+    function showEmptyTaskListMessage() {
+        listContainer.insertAdjacentHTML(
+            'afterbegin',
+            `
+            <div class="alert alert-primary d-flex align-items-center" role="alert">
+                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
+                <div>
+                    Не выполненные задачи отсутствуют
+                </div>
+            </div>
+            `
+        );
+    }
+
+    function removeEmptyTaskListMessage() {
+        const message = document.querySelector('.alert');
+
+        if (message) {
+            message.remove();
+        }
+    }
+})(tasks);
