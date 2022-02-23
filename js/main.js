@@ -1,7 +1,7 @@
 const tasks = [
     {
         _id: '5d2ca9e2e03d40b326596aa7',
-        completed: true,
+        completed: false,
         body: 'Овощи, молоко, мясо, масло подсолнечное \r\n',
         title: 'Купить продукты',
     },
@@ -13,7 +13,7 @@ const tasks = [
     },
     {
         _id: '5d2ca9e2e03d40b3232496aa7',
-        completed: true,
+        completed: false,
         body: 'Медитация по приложению Meditopia\r\n',
         title: 'Медитация',
     },
@@ -117,7 +117,7 @@ const tasks = [
     setTheme(lastSelectedTheme);
     renderAllTasks(objectOfTasks);
     form.addEventListener('submit', onFormSubmitHandler);
-    listContainer.addEventListener('click', onListItemDeleteHandler);
+    listContainer.addEventListener('click', onListBtnHandler);
     themeSelect.addEventListener('change', onThemeSelectHandler);
 
     //Logic
@@ -152,16 +152,32 @@ const tasks = [
         span.textContent = title;
         span.style.fontWeight = 'bold';
 
+        const btnsGroup = document.createElement('div');
+        btnsGroup.classList.add('ml-auto');
+
+        const comleteBtn = document.createElement('button');
+        comleteBtn.textContent = 'Comlete';
+        comleteBtn.classList.add(
+            'btn',
+            'btn-success',
+            'ml-auto',
+            'mr-2',
+            'complete-btn'
+        );
+
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = 'Delete';
         deleteBtn.classList.add('btn', 'btn-danger', 'ml-auto', 'delete-btn');
+
+        btnsGroup.appendChild(comleteBtn);
+        btnsGroup.appendChild(deleteBtn);
 
         const article = document.createElement('p');
         article.textContent = body;
         article.classList.add('mt-2', 'w-100');
 
         li.appendChild(span);
-        li.appendChild(deleteBtn);
+        li.appendChild(btnsGroup);
         li.appendChild(article);
 
         return li;
@@ -200,6 +216,14 @@ const tasks = [
         return { ...newTask };
     }
 
+    function completeTask(id) {
+        objectOfTasks[id].completed = true;
+    }
+
+    function completeTaskinHtml(parentElement) {
+        parentElement.classList.toggle('bg-success');
+    }
+
     function deleteTask(id) {
         const { title } = objectOfTasks[id];
         const isConfirm = confirm(`Подтвердите удаление задачи: ${title}`);
@@ -221,13 +245,21 @@ const tasks = [
         el.remove();
     }
 
-    function onListItemDeleteHandler({ target }) {
+    function onListBtnHandler({ target }) {
         if (target.classList.contains('delete-btn')) {
             const parentElement = target.closest('[data-task-id]');
             const listItemId = parentElement.dataset.taskId;
             const confirmed = deleteTask(listItemId);
             deleteTaskFromHTML(confirmed, parentElement);
             checkTasksList();
+            return;
+        }
+
+        if (target.classList.contains('complete-btn')) {
+            const parentElement = target.closest('[data-task-id]');
+            const listItemId = parentElement.dataset.taskId;
+            completeTask(listItemId);
+            completeTaskinHtml(parentElement);
         }
     }
 
